@@ -1,0 +1,45 @@
+<html>
+<body>
+<input value="" id="text" />
+<div id="alerts"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$( document ).ready((e)=>{
+var alerts=document.getElementById("alerts")
+$("#text").on("input",(e)=>{
+alerts.innerHTML=""
+	console.log(e.target.value)
+	var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
+	var token = "116967471baceb7e44d94009491b660ea6d0e9fe";
+	var query = e.target.value;
+	var options = {
+	    method: "POST",
+	    mode: "cors",
+	    headers: {
+	        "Content-Type": "application/json",
+	        "Accept": "application/json",
+	        "Authorization": "Token " + token
+	    },
+	    body: JSON.stringify({query: query, count:5})
+	}
+	
+	fetch(url, options)
+	.then(response => response.text())
+	.then(result => {
+		result =JSON.parse(result)
+		console.log(result)
+		for(let item of result.suggestions){
+			console.log(item.value)
+			let p=document.createElement("p")
+			p.textContent=item.value
+			alerts.appendChild(p)
+		}
+		
+		
+	})
+		.catch(error => console.log("error", error));
+	})
+})
+</script>
+</body>
+</html>
